@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "WordToPDFDocker": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
