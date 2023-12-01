@@ -5,10 +5,8 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["WordToPDFDocker/WordToPDFDocker.csproj", "WordToPDFDocker/"]
-RUN dotnet restore "WordToPDFDocker/WordToPDFDocker.csproj"
 COPY . .
-WORKDIR "/src/WordToPDFDocker"
+RUN dotnet restore "WordToPDFDocker/WordToPDFDocker.csproj"
 RUN dotnet build "WordToPDFDocker.csproj" -c Release -o /app/build
 
 FROM build AS publish
