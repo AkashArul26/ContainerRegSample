@@ -11,5 +11,5 @@ RUN dotnet publish -c Release -o out
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /src/out .
 ENTRYPOINT ["dotnet", "WordToPDFDocker.dll"]
