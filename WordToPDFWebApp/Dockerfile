@@ -10,6 +10,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
+COPY ["WordToPDFWebApp/WordToPDFWebApp.csproj", "WordToPDFWebApp/"]
 RUN dotnet restore "WordToPDFWebApp/WordToPDFWebApp.csproj"
 COPY . .
 WORKDIR "/src/WordToPDFWebApp"
