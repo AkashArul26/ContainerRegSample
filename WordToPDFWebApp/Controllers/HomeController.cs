@@ -11,10 +11,10 @@ namespace WordToPDFWebApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private Microsoft.AspNetCore.Hosting.IHostingEnvironment _env;
+        public HomeController(Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
         {
-            _logger = logger;
+            _env = env;
         }
 
         public IActionResult Index()
@@ -32,30 +32,62 @@ namespace WordToPDFWebApp.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        public IActionResult ConvertWordtoPDF()
+        public IActionResult WordToPDF(string button)
         {
-            //Open the file as Stream
-            using (FileStream docStream = new FileStream(Path.GetFullPath("Data/input-doc-used.docx"), FileMode.Open, FileAccess.Read))
+            string errorMessage = string.Empty;
+            if (button == null)
+                return View("Index");
+ 
+            if (Request.Form.Files != null)
             {
-                //Loads file stream into Word document
-                using (WordDocument wordDocument = new WordDocument(docStream, FormatType.Docx))
+                if (Request.Form.Files.Count == 0)
                 {
-                    //Instantiation of DocIORenderer for Word to PDF conversion
-                    using (DocIORenderer render = new DocIORenderer())
+                    ViewBag.Message = string.Format("Browse a Word document and then click the button to convert as a PDF document");
+                    return View("Index");
+                }
+                // Gets the extension from file.
+                string extension = Path.GetExtension(Request.Form.Files[0].FileName).ToLower();
+                // Compares extension with supported extensions.
+                if (extension == ".docx")
+                {
+                    MemoryStream stream = new MemoryStream();
+                    Request.Form.Files[0].CopyTo(stream);
+                    try
                     {
-                        //Converts Word document into PDF document
-                        PdfDocument pdfDocument = render.ConvertToPDF(wordDocument);
-
-                        //Saves the PDF document to MemoryStream.
-                        MemoryStream stream = new MemoryStream();
-                        pdfDocument.Save(stream);
-                        stream.Position = 0;
-
-                        //Download PDF document in the browser.
-                        return File(stream, "application/pdf", "Sample.pdf");
+                        //Open using Syncfusion
+                        using (WordDocument document = new WordDocument(stream, FormatType.Docx))
+                        {
+                            stream.Dispose();
+                            // Creates a new instance of DocIORenderer class.
+                            using (DocIORenderer render = new DocIORenderer())
+                            {
+                                // Converts Word document into PDF document
+                                using (PdfDocument pdf = render.ConvertToPDF(document))
+                                {                                                                     
+                                    MemoryStream memoryStream = new MemoryStream();
+                                    // Save the PDF document
+                                    pdf.Save(memoryStream);
+                                    memoryStream.Position = 0;
+                                    return File(memoryStream, "application/pdf", "WordToPDF.pdf");
+                                }                                                           
+                            } 
+                        }                                                
+                    }
+                    catch (Exception ex)
+                    {
+                        ViewBag.Message = "Message : " + ex.Message.ToString() + "StackTrace : " + ex.StackTrace.ToString();
                     }
                 }
+                else
+                {
+                    ViewBag.Message = string.Format("Please choose Word format document to convert to PDF");
+                }
             }
-        }
+            else
+            {
+                ViewBag.Message = string.Format("Browse a Word document and then click the button to convert as a PDF document");
+            }
+            return View("Index");
+        }  
     }
 }
