@@ -5,8 +5,20 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
-RUN apt-get update && apt-get install -y dotnet-sdk-6.0
-EXPOSE 8080
-COPY . .
+EXPOSE 80
+EXPOSE 443
 
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+RUN dotnet restore "WordToPDFWebApp/WordToPDFWebApp.csproj"
+COPY . .
+WORKDIR "/src/WordToPDFWebApp"
+RUN dotnet build "WordToPDFWebApp.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "WordToPDFWebApp.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "WordToPDFWebApp.dll"]
