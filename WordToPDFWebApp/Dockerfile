@@ -5,6 +5,7 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
+RUN apt-get update && apt-get install -y dotnet-sdk-6.0
 EXPOSE 8080
 COPY . .
 
