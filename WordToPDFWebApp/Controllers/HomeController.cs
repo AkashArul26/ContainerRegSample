@@ -41,11 +41,10 @@ namespace WordToPDFWebApp.Controllers
             {
                 Assembly assem = typeof(HomeController).Assembly;
 
-                Console.WriteLine("Assembly Full Name:");
-                Console.WriteLine(assem.FullName);
-                throw new Exception(assem.FullName);
+                string name = assem.GetName().Name;
+                throw new Exception(name);
 
-                string fontstring = Environment.CurrentDirectory + "\\arial.ttf";
+                string fontstring = assem.GetName().Name + "\\arial.ttf";
                 //Create a new PDF document.
                 PdfDocument document = new PdfDocument();
                 //Add a page to the document.
