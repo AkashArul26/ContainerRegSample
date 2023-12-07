@@ -39,6 +39,12 @@ namespace WordToPDFWebApp.Controllers
         {
             try
             {
+                Assembly assem = typeof(HomeController).Assembly;
+
+                Console.WriteLine("Assembly Full Name:");
+                Console.WriteLine(assem.FullName);
+                throw new Exception(assem.FullName);
+
                 string fontstring = Environment.CurrentDirectory + "\\arial.ttf";
                 //Create a new PDF document.
                 PdfDocument document = new PdfDocument();
