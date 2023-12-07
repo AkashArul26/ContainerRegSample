@@ -65,7 +65,7 @@ namespace WordToPDFWebApp.Controllers
                             SKCanvas canvas = surface.Canvas;
                             canvas.Clear(SKColors.White);
                             using (SKPaint paint = new SKPaint())
-                            using (SKTypeface tf = SKTypeface.FromFamilyName("Arial"))
+                            using (SKTypeface tf = SKTypeface.FromStream(fontStream))
                             {
                                 paint.Color = SKColors.Black;
                                 paint.IsAntialias = true;
