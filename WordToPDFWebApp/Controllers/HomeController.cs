@@ -60,6 +60,11 @@ namespace WordToPDFWebApp.Controllers
                     try
                     {
                         fontStream.Position = 0;
+                        SKTypeface tf = SKTypeface.FromStream(fontStream);
+                        if (tf == null)
+                            throw new Exception("null");
+                        else
+                            throw new Exception(tf.FamilyName);
                         SKImageInfo imageInfo = new SKImageInfo(300, 250);
                         using (SKSurface surface = SKSurface.Create(imageInfo))
                         {
