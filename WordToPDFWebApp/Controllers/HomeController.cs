@@ -34,27 +34,35 @@ namespace WordToPDFWebApp.Controllers
         }
         public IActionResult WordToPDF(string button)
         {
-            //Create a new PDF document.
-            PdfDocument document = new PdfDocument();
-            //Add a page to the document.
-            PdfPage page = document.Pages.Add();
+            try
+            {
+                //Create a new PDF document.
+                PdfDocument document = new PdfDocument();
+                //Add a page to the document.
+                PdfPage page = document.Pages.Add();
 
-            //Create PDF graphics for the page.
-            PdfGraphics graphics = page.Graphics;
-            FileStream fontStream = new FileStream(Path.GetFullPath(@"Data/arial.ttf"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
-            //Use the font installed in the machine
-            PdfFont font = new PdfTrueTypeFont(fontStream, 14);
-            //Draw the text.
-            graphics.DrawString("Hello World!!!", font, PdfBrushes.Black, new PointF(0, 0));
-            //Saving the PDF to the MemoryStream.
-            MemoryStream stream = new MemoryStream();
-            document.Save(stream);
-            //Set the position as '0'.
-            stream.Position = 0;
-            //Download the PDF document in the browser.
-            FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/pdf");
-            fileStreamResult.FileDownloadName = "Sample.pdf";
-            return fileStreamResult;
+                //Create PDF graphics for the page.
+                PdfGraphics graphics = page.Graphics;
+                FileStream fontStream = new FileStream(Path.GetFullPath(@"Data/arial.ttf"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+                //Use the font installed in the machine
+                PdfFont font = new PdfTrueTypeFont(fontStream, 14);
+                //Draw the text.
+                graphics.DrawString("Hello World!!!", font, PdfBrushes.Black, new PointF(0, 0));
+                //Saving the PDF to the MemoryStream.
+                MemoryStream stream = new MemoryStream();
+                document.Save(stream);
+                //Set the position as '0'.
+                stream.Position = 0;
+                //Download the PDF document in the browser.
+                FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/pdf");
+                fileStreamResult.FileDownloadName = "Sample.pdf";
+                return fileStreamResult;
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = "Message : " + ex.Message.ToString() + "StackTrace : " + ex.StackTrace.ToString();
+            }
+            return View("Index");
         }  
     }
 }
