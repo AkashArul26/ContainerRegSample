@@ -9,10 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\arial.ttf" />
     <None Remove="Data\input-doc-used.docx" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Data\arial.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Data\input-doc-used.docx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -20,7 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
-    <PackageReference Include="Syncfusion.DocIORenderer.Net.Core" Version="23.2.6" />
+    <PackageReference Include="Syncfusion.Pdf.Net.Core" Version="23.2.7" />
   </ItemGroup>
 
 </Project>
