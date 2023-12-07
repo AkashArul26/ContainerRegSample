@@ -43,7 +43,7 @@ namespace WordToPDFWebApp.Controllers
 
                 //Create PDF graphics for the page.
                 PdfGraphics graphics = page.Graphics;
-                FileStream fontStream = new FileStream(Path.GetFullPath(@"Data/arial.ttf"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+                FileStream fontStream = new FileStream(Path.GetFullPath(@"arial.ttf"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
                 //Use the font installed in the machine
                 PdfFont font = new PdfTrueTypeFont(fontStream, 14);
                 //Draw the text.

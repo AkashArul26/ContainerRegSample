@@ -9,14 +9,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="arial.ttf" />
     <None Remove="Data\arial.ttf" />
     <None Remove="Data\input-doc-used.docx" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Data\arial.ttf">
+    <EmbeddedResource Include="arial.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Data\input-doc-used.docx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
