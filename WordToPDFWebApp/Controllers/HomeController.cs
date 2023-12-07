@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Syncfusion.Pdf;
-using Syncfusion.Pdf.Graphics;
-using Syncfusion.Drawing;
 using System.IO;
 using System.Diagnostics;
 using WordToPDFWebApp.Models;
@@ -9,6 +6,10 @@ using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.AspNetCore.Hosting.Server;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
+using static System.Net.Mime.MediaTypeNames;
+using SkiaSharp;
+using System.Xml.Linq;
+using System.Reflection.Metadata;
 
 namespace WordToPDFWebApp.Controllers
 {
@@ -58,45 +59,27 @@ namespace WordToPDFWebApp.Controllers
                     Request.Form.Files[0].CopyTo(fontStream);
                     try
                     {
-                        //Create a new PDF document.
-                        PdfDocument document = new PdfDocument();
-                        //Add a page to the document.
-                        PdfPage page = document.Pages.Add();
-
-                        //Create PDF graphics for the page.
-                        PdfGraphics graphics = page.Graphics;
-                        //Use the font installed in the machine
-                        PdfFont font = new PdfTrueTypeFont(fontStream, 14);
-                        //Draw the text.
-                        graphics.DrawString("Hello World!!!", font, PdfBrushes.Black, new PointF(0, 0));
-                        //Saving the PDF to the MemoryStream.
-                        MemoryStream pdfStream = new MemoryStream();
-                        document.Save(pdfStream);
-                        //Set the position as '0'.
-                        pdfStream.Position = 0;
-                        return File(pdfStream, "application/pdf", "WordToPDF.pdf");
-                        ////Download the PDF document in the browser.
-                        //FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/pdf");
-                        //fileStreamResult.FileDownloadName = "Sample.pdf";
-                        //return fileStreamResult;
-                        ////Open using Syncfusion
-                        //using (WordDocument document = new WordDocument(stream, FormatType.Docx))
-                        //{
-                        //    stream.Dispose();
-                        //    // Creates a new instance of DocIORenderer class.
-                        //    using (DocIORenderer render = new DocIORenderer())
-                        //    {
-                        //        // Converts Word document into PDF document
-                        //        using (PdfDocument pdf = render.ConvertToPDF(document))
-                        //        {
-                        //            MemoryStream memoryStream = new MemoryStream();
-                        //            // Save the PDF document
-                        //            pdf.Save(memoryStream);
-                        //            memoryStream.Position = 0;
-                        //            return File(memoryStream, "application/pdf", "WordToPDF.pdf");
-                        //        }
-                        //    }
-                        //}
+                        SKImageInfo imageInfo = new SKImageInfo(300, 250);
+                        using (SKSurface surface = SKSurface.Create(imageInfo))
+                        {
+                            SKCanvas canvas = surface.Canvas;
+                            canvas.Clear(SKColors.White);
+                            using (SKPaint paint = new SKPaint())
+                            using (SKTypeface tf = SKTypeface.FromFamilyName("Arial"))
+                            {
+                                paint.Color = SKColors.Black;
+                                paint.IsAntialias = true;
+                                paint.TextSize = 48;
+                                canvas.DrawText("Hello world", 50, 50, paint);
+                            }
+                            using (SKImage image = surface.Snapshot())
+                            using (SKData data = image.Encode(SKEncodedImageFormat.Png, 100))
+                            {
+                                MemoryStream memoryStream = new MemoryStream(data.ToArray());
+                                memoryStream.Position = 0;
+                                return File(memoryStream, "application/png", "image.png");
+                            }
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -113,41 +96,6 @@ namespace WordToPDFWebApp.Controllers
                 ViewBag.Message = string.Format("Browse a Word document and then click the button to convert as a PDF document");
             }
             return View("Index");
-            try
-            {
-                Assembly assem = typeof(HomeController).Assembly;
-
-                //string name = assem.GetName().Name;
-                //throw new Exception(name);
-
-                string fontstring = assem.GetName().Name + "\\arial.ttf";
-                //Create a new PDF document.
-                PdfDocument document = new PdfDocument();
-                //Add a page to the document.
-                PdfPage page = document.Pages.Add();
-
-                //Create PDF graphics for the page.
-                PdfGraphics graphics = page.Graphics;
-                FileStream fontStream = new FileStream(fontstring, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
-                //Use the font installed in the machine
-                PdfFont font = new PdfTrueTypeFont(fontStream, 14);
-                //Draw the text.
-                graphics.DrawString("Hello World!!!", font, PdfBrushes.Black, new PointF(0, 0));
-                //Saving the PDF to the MemoryStream.
-                MemoryStream stream = new MemoryStream();
-                document.Save(stream);
-                //Set the position as '0'.
-                stream.Position = 0;
-                //Download the PDF document in the browser.
-                FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/pdf");
-                fileStreamResult.FileDownloadName = "Sample.pdf";
-                return fileStreamResult;
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Message = "Message : " + ex.Message.ToString() + "StackTrace : " + ex.StackTrace.ToString();
-            }
-            return View("Index");
-        }  
+        }
     }
 }
