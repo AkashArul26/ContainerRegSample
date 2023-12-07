@@ -60,20 +60,18 @@ namespace WordToPDFWebApp.Controllers
                     try
                     {
                         fontStream.Position = 0;
-                        SKTypeface tfstream = SKTypeface.FromStream(fontStream);
-                        throw new Exception(tfstream.FamilyName);
                         SKImageInfo imageInfo = new SKImageInfo(300, 250);
                         using (SKSurface surface = SKSurface.Create(imageInfo))
                         {
                             SKCanvas canvas = surface.Canvas;
                             canvas.Clear(SKColors.White);
                             using (SKPaint paint = new SKPaint())
-                            using (SKTypeface tf = SKTypeface.FromStream(fontStream))
+                            //using (SKTypeface tf = SKTypeface.FromStream(fontStream))
                             {
                                 paint.Color = SKColors.Black;
                                 paint.IsAntialias = true;
-                                paint.TextSize = 48;
-                                canvas.DrawText("Hello world", 50, 50, paint);
+                                //paint.TextSize = 48;
+                                canvas.DrawLine(100, 150, 200, 150, paint);
                             }
                             using (SKImage image = surface.Snapshot())
                             using (SKData data = image.Encode(SKEncodedImageFormat.Png, 100))
