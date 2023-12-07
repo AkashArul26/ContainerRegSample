@@ -5,6 +5,9 @@ using Syncfusion.Drawing;
 using System.IO;
 using System.Diagnostics;
 using WordToPDFWebApp.Models;
+using Microsoft.Extensions.Hosting.Internal;
+using Microsoft.AspNetCore.Hosting.Server;
+using System.Reflection;
 
 namespace WordToPDFWebApp.Controllers
 {
@@ -36,6 +39,7 @@ namespace WordToPDFWebApp.Controllers
         {
             try
             {
+                string fontstring = Environment.CurrentDirectory + "\\arial.ttf";
                 //Create a new PDF document.
                 PdfDocument document = new PdfDocument();
                 //Add a page to the document.
@@ -43,7 +47,7 @@ namespace WordToPDFWebApp.Controllers
 
                 //Create PDF graphics for the page.
                 PdfGraphics graphics = page.Graphics;
-                FileStream fontStream = new FileStream(Path.GetFullPath(@"arial.ttf"), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+                FileStream fontStream = new FileStream(fontstring, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
                 //Use the font installed in the machine
                 PdfFont font = new PdfTrueTypeFont(fontStream, 14);
                 //Draw the text.
