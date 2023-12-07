@@ -41,8 +41,8 @@ namespace WordToPDFWebApp.Controllers
             {
                 Assembly assem = typeof(HomeController).Assembly;
 
-                string name = assem.GetName().Name;
-                throw new Exception(name);
+                //string name = assem.GetName().Name;
+                //throw new Exception(name);
 
                 string fontstring = assem.GetName().Name + "\\arial.ttf";
                 //Create a new PDF document.
