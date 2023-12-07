@@ -59,11 +59,12 @@ namespace WordToPDFWebApp.Controllers
                     Request.Form.Files[0].CopyTo(fontStream);
                     try
                     {
+                        fontStream.Position = 0;
+                        SKTypeface tfstream = SKTypeface.FromStream(fontStream);
+                        throw new Exception(tfstream.FamilyName);
                         SKImageInfo imageInfo = new SKImageInfo(300, 250);
                         using (SKSurface surface = SKSurface.Create(imageInfo))
                         {
-                            string deftf = SKTypeface.Default.FamilyName;
-                            throw new Exception(deftf);
                             SKCanvas canvas = surface.Canvas;
                             canvas.Clear(SKColors.White);
                             using (SKPaint paint = new SKPaint())
